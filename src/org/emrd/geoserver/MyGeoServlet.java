@@ -337,8 +337,8 @@ public class MyGeoServlet {
         //Simulamos el tiempo actual
         Calendar tiempo = Calendar.getInstance();
         //tiempo.set(2020, 0, 22, 0, 0, 0); //22 de enero de 2020 a las 00:00:00
-        //tiempo.set(2019, 5, 4, 12, 0, 0); //4 de junio de 2019 a las 12:00:00
-        tiempo.set(2020, 3, 30, 14, 0, 0); //30 de abril de 2020 a las 00:00:00
+        tiempo.set(2019, 5, 4, 12, 0, 0); //4 de junio de 2019 a las 12:00:00
+        //tiempo.set(2020, 3, 30, 14, 0, 0); //30 de abril de 2020 a las 00:00:00
         System.out.println("Simulated current time: " + tiempo.getTime());
         
         return tiempo.getTimeInMillis();

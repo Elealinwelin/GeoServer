@@ -87,14 +87,14 @@ public class LoadData {
      */
     static public String getNameMagnitude(String code, int count) throws Exception {
         switch(code){
-            case "1":
-                return "SO2";
-            case "6":
-                return "CO";
+//            case "1":
+//                return "SO2";
+//            case "6":
+//                return "CO";
 //            case "7":
 //                return "NO";
-            case "8":
-                return "NO2";
+//            case "8":
+//                return "NO2";
 //            case "9":
 //                return "PM2.5";
             case "10":
