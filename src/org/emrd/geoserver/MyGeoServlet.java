@@ -40,7 +40,7 @@ public class MyGeoServlet {
      * @param timestamp Tiempo en milisegundos en el que un sensor ha realizado una medición
      * @param lat Latitud de la localización de un sensor
      * @param lon Longitud de la localización de un sensor
-     * @return Respuesta del servidor HTTP
+     * @return Respuesta del servidor HTTP con el objeto insertado
      */
     @GET
     @Path("/insert/{device}/{sensor}/{property}/{value}/{timestamp}/{lat}/{lon}")
@@ -75,7 +75,7 @@ public class MyGeoServlet {
      * en los últimos X milisegundos.
      * @param device Dispositivo que contiene uno o varios sensores. Es el nombre de la base de datos que contiene los geo-sensores
      * @param offtime Período de tiempo atrás en milisegundos a partir del cual queremos mostrar los datos consultados
-     * @return Respuesta del servidor HTTP
+     * @return Respuesta del servidor HTTP con los objetos de la consulta
      */
     @GET
     @Path("/query_device_time/{device}/{offtime}")
@@ -115,7 +115,7 @@ public class MyGeoServlet {
      * @param sensor Nombre de un sensor que mide una o varias propiedades
      * @param property Propiedad medida por un sensor
      * @param offtime Período de tiempo atrás en milisegundos a partir del cual queremos mostrar los datos consultados
-     * @return Respuesta del servidor HTTP
+     * @return Respuesta del servidor HTTP con los objetos de la consulta
      */
     @GET
     @Path("/query_device_sensor_property_time/{device}/{sensor}/{property}/{offtime}")
@@ -162,7 +162,7 @@ public class MyGeoServlet {
      * a un determinado dispositivo (ciudad).
      * @param device Dispositivo que contiene uno o varios sensores. Es el nombre de la base de datos que contiene los geo-sensores
      * @param sensor Nombre de un sensor que mide una o varias propiedades
-     * @return Respuesta del servidor HTTP
+     * @return Respuesta del servidor HTTP con los objetos de la consulta
      */
     @GET
     @Path("/query_sensor_properties/{device}/{sensor}")
@@ -204,10 +204,10 @@ public class MyGeoServlet {
     }
 
     /**
-     * Servicio para consultar los datos de las últimas actualizaciones de los sensores
-     * de un determinado dispositivo (ciudad).
+     * Servicio para consultar los datos de la última actualización de cada uno de
+     * los sensores de un determinado dispositivo (ciudad).
      * @param device Dispositivo que contiene uno o varios sensores. Es el nombre de la base de datos que contiene los geo-sensores
-     * @return Respuesta del servidor HTTP
+     * @return Respuesta del servidor HTTP con los objetos de la consulta
      */
     @GET
     @Path("/query_snapshot/{device}")
@@ -245,11 +245,12 @@ public class MyGeoServlet {
     }
 
     /**
-     * Servicio para consultar los datos de las últimas actualizaciones de aquellos
-     * sensores que miden una propiedad concreta en un determinado dispositivo (ciudad).
+     * Servicio para consultar los datos de la última actualización sobre una propiedad
+     * específica medida por todos los sensores de un determinado dispositivo (ciudad)
+     * que midan esa propiedad.
      * @param device Dispositivo que contiene uno o varios sensores. Es el nombre de la base de datos que contiene los geo-sensores
      * @param property Propiedad medida por un sensor
-     * @return Respuesta del servidor HTTP
+     * @return Respuesta del servidor HTTP con los objetos de la consulta
      */
     @GET
     @Path("/query_snapshot/{device}/{property}")
@@ -264,6 +265,7 @@ public class MyGeoServlet {
             List<LastSensorData> lastData = datastore
                     .aggregate(SensorGeoData.class)
                     .match(Filters.eq("property", property))
+                    .match(Filters.lte("timestamp", getCurrentTime()))  //Este filtro no hace falta si el tiempo no es simulado
                     .group(
                             Group.of(id().field("device").field("sensor").field("property"))
                                     .field("maxtime", max(field("timestamp")))
@@ -289,10 +291,10 @@ public class MyGeoServlet {
     }
     
     /**
-     * Servicio para consultar las propiedades de los sensores de un determinado
-     * dispositivo (ciudad).
+     * Servicio para consultar información de todos los sensores de un determinado
+     * dispositivo (ciudad), incluyendo las propiedades que miden.
      * @param device Dispositivo que contiene uno o varios sensores. Es el nombre de la base de datos que contiene los geo-sensores
-     * @return Respuesta del servidor HTTP
+     * @return Respuesta del servidor HTTP con los objetos de la consulta
      */
     @GET
     @Path("/query_sensor_properties/{device}")
